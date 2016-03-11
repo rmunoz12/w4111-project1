@@ -188,9 +188,9 @@ def index_example():
   return render_template("index-example.html", **context)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-  print request.args
+  print request.form
 
   cursor = g.conn.execute("SELECT uname FROM users")
   names = []
