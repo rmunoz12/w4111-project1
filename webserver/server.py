@@ -190,7 +190,14 @@ def index_example():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+  print request
   print request.form
+  if request.form and request.form['myselect']:
+    g.user = request.form['myselect']
+  else:
+    g.user = None
+
+  # g.user = None
 
   cursor = g.conn.execute("SELECT uname FROM users")
   names = []
@@ -198,7 +205,7 @@ def index():
     names.append(result['uname'])  # can also be accessed using result[0]
   cursor.close()
 
-  context = dict(data = names)
+  context = dict(data=names, user=g.user)
   return render_template("index.html", **context)
 
 
