@@ -15,7 +15,9 @@ A debugger such as "pdb" may be helpful for debugging.
 Read about it online.
 """
 
+import json
 import os
+
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
@@ -37,7 +39,10 @@ app = Flask(__name__, template_folder=tmpl_dir)
 #
 #     DATABASEURI = "postgresql://ewu2493:foobar@w4111db.eastus.cloudapp.azure.com/ewu2493"
 #
-DATABASEURI = "sqlite:///test.db"
+
+with open('config.json') as f:
+    config = json.load(f)
+DATABASEURI = config['db_path']
 
 
 #
