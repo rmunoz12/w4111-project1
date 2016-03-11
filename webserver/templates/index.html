@@ -10,15 +10,13 @@
 <body>
   <h1>Welcome! Please select user's perspective.</h1>
 
-  <h2>Current user is: {{ user }}</h2>
-
-
-  <form action="/" method="POST">
-    <select name="myselect" id="myselect" onchange="this.form.submit()">
+  <form action="/user-dashboard" method="POST">
+    <select name="user" id="user">
         {% for n in data %}
             <div> <option value="{{ n }}"> {{ n }} </option> </div>
         {% endfor %}
     </select>
+    <input type="submit" value="Select">
   </form>
 
 

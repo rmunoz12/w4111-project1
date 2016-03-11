@@ -95,6 +95,8 @@ def before_request():
 
   The variable g is globally accessible
   """
+  print request
+  print request.form
   try:
     g.conn = engine.connect()
   except:
@@ -188,25 +190,28 @@ def index_example():
   return render_template("index-example.html", **context)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/user-dashboard', methods=['POST'])
+def user_dashboard():
+    if request.form['user']:
+        g.user = request.form['user']
+        context = dict(user=g.user)
+        return render_template('user-dashboard.html', **context)
+    return index()
+
+
+@app.route('/')
 def index():
-  print request
-  print request.form
-  if request.form and request.form['myselect']:
-    g.user = request.form['myselect']
-  else:
+
     g.user = None
 
-  # g.user = None
+    cursor = g.conn.execute("SELECT uname FROM users")
+    names = []
+    for result in cursor:
+        names.append(result['uname'])  # can also be accessed using result[0]
+    cursor.close()
 
-  cursor = g.conn.execute("SELECT uname FROM users")
-  names = []
-  for result in cursor:
-    names.append(result['uname'])  # can also be accessed using result[0]
-  cursor.close()
-
-  context = dict(data=names, user=g.user)
-  return render_template("index.html", **context)
+    context = dict(data=names)
+    return render_template("index.html", **context)
 
 
 #
