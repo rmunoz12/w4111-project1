@@ -40,6 +40,13 @@ app = Flask(__name__, template_folder=tmpl_dir)
 #     DATABASEURI = "postgresql://ewu2493:foobar@w4111db.eastus.cloudapp.azure.com/ewu2493"
 #
 
+# Example for local config.json:
+# ---
+# {
+#     "db_path": "postgresql://Rich@localhost/Rich"
+# }
+
+
 with open('config.json') as f:
     config = json.load(f)
 DATABASEURI = config['db_path']
