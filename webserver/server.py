@@ -127,8 +127,8 @@ def teardown_request(exception):
 # see for routing: http://flask.pocoo.org/docs/0.10/quickstart/#routing
 # see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
 #
-@app.route('/')
-def index():
+@app.route('/example')
+def index_example():
   """
   request is a special object that Flask provides to access web request information:
 
@@ -185,7 +185,22 @@ def index():
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
+  return render_template("index-example.html", **context)
+
+
+@app.route('/')
+def index():
+  print request.args
+
+  cursor = g.conn.execute("SELECT uname FROM users")
+  names = []
+  for result in cursor:
+    names.append(result['uname'])  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data = names)
   return render_template("index.html", **context)
+
 
 #
 # This is an example of a different path.  You can see it at

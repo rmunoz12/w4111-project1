@@ -1,6 +1,6 @@
 <html>
   <style>
-    body{ 
+    body{
       font-size: 15pt;
       font-family: arial;
     }
@@ -8,8 +8,9 @@
 
 
 <body>
-  <h1>Some famous Computer Scientists</h1>
-  <div>{{data}}</div>
+  <h1>Welcome! Please select user's perspective.</h1>
+
+    <div>{{data}}</div>
 
   <div>
     {% for n in data %}
@@ -17,11 +18,15 @@
     {% endfor %}
   </div>
 
-<p><a href="/another">Go to the other page</a></p>
 
-<form method="POST" action="/add">
-<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
-</form>
+  <form action="/" method="POST">
+    <select name="myselect" id="myselect" onchange="this.form.submit()">
+        {% for n in data %}
+            <div> <option value="{{ n }}"> {{ n }} </option> </div>
+        {% endfor %}
+    </select>
+  </form>
+
 
 </body>
 
