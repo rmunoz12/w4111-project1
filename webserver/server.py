@@ -23,6 +23,9 @@ from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 
+import util
+
+
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
@@ -192,24 +195,34 @@ def index_example():
 
 @app.route('/user-dashboard', methods=['POST'])
 def user_dashboard():
-    if request.form['user']:
-        g.user = request.form['user']
-        context = dict(user=g.user)
+    if request.form['uid']:
+        g.uid = request.form['uid']
+
+        name = util.uname(g.conn, g.uid).first()['uname']
+
+
+        cursor = util.friends(g.conn, g.uid)
+        friends = {}
+        for r in cursor:
+            friends[r['friend_uid']] = r
+        cursor.close()
+
+        context = dict(user=name, friends=friends)
         return render_template('user-dashboard.html', **context)
     return index()
 
 
 @app.route('/')
 def index():
-    g.user = None
+    g.uid = None
 
-    cursor = g.conn.execute("SELECT uname FROM users")
-    names = []
+    cursor = g.conn.execute("SELECT uid, uname FROM users")
+    users = {}
     for result in cursor:
-        names.append(result['uname'])  # can also be accessed using result[0]
+        users[result['uid']] = result['uname']
     cursor.close()
 
-    context = dict(data=names)
+    context = dict(data=users)
     return render_template("index.html", **context)
 
 

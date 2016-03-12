@@ -10,7 +10,12 @@
 <body>
   <h1>Hello, {{ user }}.</h1>
 
-  <p>This is your dashboard!</p>
+  <p>
+      Your friends:
+      {% for fid, d in friends.items() %}
+          <div> {{ d['uname'] }} </option> </div>
+      {% endfor %}
+  </p>
 
   <p><a href="/">Select another user.</a></p>
 
