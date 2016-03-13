@@ -5,7 +5,17 @@ def friends(conn, origin_uid):
     cursor = conn.execute(qry, args)
     return cursor
 
+
+def not_friends(conn, origin_uid):
+    qry = "SELECT u.uid, u.uname FROM users u " \
+          "WHERE u.uid NOT IN " \
+          "(SELECT f.friend_uid FROM friends f " \
+          "WHERE f.origin_uid = %s);"
+    args = origin_uid
+    return conn.execute(qry, args)
+
+
 def uname(conn, uid):
-    qry = "SELECT uname FROM users WHERE uid = %s"
+    qry = "SELECT uname FROM users WHERE uid = %s;"
     args = uid
     return conn.execute(qry, args)

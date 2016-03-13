@@ -11,10 +11,21 @@
   <h1>Hello, {{ user }}.</h1>
 
   <p>
-      Your friends:
+      Users you follow:
       {% for fid, d in friends.items() %}
           <div> {{ d['uname'] }} </option> </div>
       {% endfor %}
+  </p>
+
+  <p>Follow another user:
+    <form action="/add-friend" method="POST">
+      <select name="uid" id="user">
+        {% for uid, d in not_friends.items() %}
+            <div> <option value="{{ uid }}"> {{ d['uname'] }} </option> </div>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Add friend">
+    </form>
   </p>
 
   <p><a href="/">Select another user.</a></p>

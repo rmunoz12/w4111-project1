@@ -18,6 +18,7 @@ Read about it online.
 
 import json
 import os
+import traceback
 
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
@@ -104,7 +105,6 @@ def before_request():
         g.conn = engine.connect()
     except:
         print "uh oh, problem connecting to database"
-        import traceback;
         traceback.print_exc()
         g.conn = None
 
@@ -207,7 +207,12 @@ def user_dashboard():
             friends[r['friend_uid']] = r
         cursor.close()
 
-        context = dict(user=name, friends=friends)
+        cursor = util.not_friends(g.conn, g.uid)
+        not_friends = {}
+        for r in cursor:
+            not_friends[r['uid']] = r
+
+        context = dict(user=name, friends=friends, not_friends=not_friends)
         return render_template('user-dashboard.html', **context)
     return index()
 
