@@ -18,9 +18,17 @@ def not_friends(conn, origin_uid):
 
 def add_friend(conn, origin_uid, friend_uid):
     qry = "INSERT INTO friends (origin_uid, friend_uid) " \
-          "VALUES (%s, %s)"
+          "VALUES (%s, %s);"
     args = origin_uid, friend_uid
     return conn.execute(qry, args)
+
+
+def delete_friend(conn, origin_uid, friend_uid):
+    qry = "DELETE FROM friends " \
+          "WHERE origin_uid = %s AND friend_uid = %s;"
+    args = origin_uid, friend_uid
+    return conn.execute(qry, args)
+
 
 
 def uname(conn, uid):

@@ -102,8 +102,8 @@ def before_request():
 
     The variable g is globally accessible
     """
-    print request
-    print request.form
+    print "request: %s" % request
+    print "request.form: %s" % request.form
     try:
         g.conn = engine.connect()
     except:
@@ -249,6 +249,17 @@ def add_friend():
         print("reached /add-friend with no session['uid']; return to index")
         return redirect(url_for('index'))
     cursor = util.add_friend(g.conn, session['uid'], request.form['uid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+
+@app.route('/remove-friend', methods=['POST'])
+def remove_friend():
+    if 'uid' not in session:
+        print("reached /delete-friend with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = util.delete_friend(g.conn, session['uid'],
+                                request.form['delete_uid'])
     cursor.close()
     return redirect(url_for('index'))
 

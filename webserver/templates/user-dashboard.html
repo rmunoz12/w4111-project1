@@ -4,6 +4,9 @@
       font-size: 15pt;
       font-family: arial;
     }
+    ul {
+    list-style-type: none;
+    }
   </style>
 
 
@@ -11,10 +14,19 @@
   <h1>Hello, {{ user }}.</h1>
 
   <p>
+  {# Example: http://stackoverflow.com/questions/10407433/how-do-i-get-my-html-button-to-delete-the-right-list-item-from-a-sqlite-database#}
       Users you follow:
+      <ul>
       {% for fid, d in friends.items() %}
-          <div> {{ d['uname'] }} </option> </div>
+        <form action="/remove-friend" method="POST" class="remove-friend">
+        <li> <input type="submit" value="X"></input> {{ d['uname'] }}
+
+          <input type=hidden value="{{ d['friend_uid'] }}" name="delete_uid"></input>
+
+          </form>
+          </li>
       {% endfor %}
+      </ul>
   </p>
 
   <p>Follow another user:
