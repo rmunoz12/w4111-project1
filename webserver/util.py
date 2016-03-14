@@ -10,8 +10,16 @@ def not_friends(conn, origin_uid):
     qry = "SELECT u.uid, u.uname FROM users u " \
           "WHERE u.uid NOT IN " \
           "(SELECT f.friend_uid FROM friends f " \
-          "WHERE f.origin_uid = %s);"
-    args = origin_uid
+          "WHERE f.origin_uid = %s " \
+          "UNION SELECT %s);"
+    args = origin_uid, origin_uid
+    return conn.execute(qry, args)
+
+
+def add_friend(conn, origin_uid, friend_uid):
+    qry = "INSERT INTO friends (origin_uid, friend_uid) " \
+          "VALUES (%s, %s)"
+    args = origin_uid, friend_uid
     return conn.execute(qry, args)
 
 

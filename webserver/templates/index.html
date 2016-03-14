@@ -10,7 +10,7 @@
 <body>
   <h1>Welcome! Please select user's perspective.</h1>
 
-  <form action="/user-dashboard" method="POST">
+  <form action="/login" method="POST">
     <select name="uid" id="user">
         {% for uid, name in data.items() %}
             <div> <option value="{{ uid }}"> {{ name }} </option> </div>

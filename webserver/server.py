@@ -22,7 +22,8 @@ import traceback
 
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, Response
+from flask import Flask, request, render_template, g, redirect, Response, \
+                  session, url_for
 
 import util
 
@@ -54,6 +55,8 @@ app = Flask(__name__, template_folder=tmpl_dir)
 with open('config.json') as f:
     config = json.load(f)
 DATABASEURI = config['db_path']
+
+app.secret_key = config['secret']
 
 #
 # This line creates a database engine that knows how to connect to the URI above
@@ -193,34 +196,31 @@ def index_example():
     return render_template("index-example.html", **context)
 
 
-@app.route('/user-dashboard', methods=['POST'])
+# @app.route('/user-dashboard', methods=['POST'])
 def user_dashboard():
-    if request.form['uid']:
-        g.uid = request.form['uid']
+    g.uid = session['uid']
+    name = util.uname(g.conn, g.uid).first()['uname']
 
-        name = util.uname(g.conn, g.uid).first()['uname']
+    cursor = util.friends(g.conn, g.uid)
+    friends = {}
+    for r in cursor:
+        friends[r['friend_uid']] = r
+    cursor.close()
 
+    cursor = util.not_friends(g.conn, g.uid)
+    not_friends = {}
+    for r in cursor:
+        not_friends[r['uid']] = r
+    cursor.close()
 
-        cursor = util.friends(g.conn, g.uid)
-        friends = {}
-        for r in cursor:
-            friends[r['friend_uid']] = r
-        cursor.close()
-
-        cursor = util.not_friends(g.conn, g.uid)
-        not_friends = {}
-        for r in cursor:
-            not_friends[r['uid']] = r
-
-        context = dict(user=name, friends=friends, not_friends=not_friends)
-        return render_template('user-dashboard.html', **context)
-    return index()
+    context = dict(user=name, friends=friends, not_friends=not_friends)
+    return render_template('user-dashboard.html', **context)
 
 
 @app.route('/')
 def index():
-    g.uid = None
-
+    if 'uid' in session:
+        return user_dashboard()
     cursor = g.conn.execute("SELECT uid, uname FROM users")
     users = {}
     for result in cursor:
@@ -229,6 +229,28 @@ def index():
 
     context = dict(data=users)
     return render_template("index.html", **context)
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    session['uid'] = request.form['uid']
+    return redirect(url_for('index'))
+
+
+@app.route('/logout')
+def logout():
+    session.pop('uid', None)
+    return redirect(url_for('index'))
+
+
+@app.route('/add-friend', methods=['POST'])
+def add_friend():
+    if 'uid' not in session:
+        print("reached /add-friend with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = util.add_friend(g.conn, session['uid'], request.form['uid'])
+    cursor.close()
+    return redirect(url_for('index'))
 
 
 #
