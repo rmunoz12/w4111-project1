@@ -25,7 +25,7 @@ from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response, \
                   session, url_for
 
-import util
+import qry
 
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -198,27 +198,27 @@ def index_example():
 
 def user_dashboard():
     uid = session['uid']
-    name = util.uname(g.conn, uid).first()['uname']
+    name = qry.uname(g.conn, uid).first()['uname']
 
-    cursor = util.friends(g.conn, uid)
+    cursor = qry.friends(g.conn, uid)
     friends = {}
     for r in cursor:
         friends[r['friend_uid']] = r
     cursor.close()
 
-    cursor = util.not_friends(g.conn, uid)
+    cursor = qry.not_friends(g.conn, uid)
     not_friends = {}
     for r in cursor:
         not_friends[r['uid']] = r
     cursor.close()
 
-    cursor = util.artist_follows(g.conn, uid)
+    cursor = qry.artist_follows(g.conn, uid)
     artist_follows = {}
     for r in cursor:
         artist_follows[r['aid']] = r
     cursor.close()
 
-    cursor = util.not_followed(g.conn, uid)
+    cursor = qry.not_followed(g.conn, uid)
     not_followed = {}
     for r in cursor:
         not_followed[r['aid']] = r
@@ -260,7 +260,7 @@ def add_friend():
     if 'uid' not in session:
         print("reached /add-friend with no session['uid']; return to index")
         return redirect(url_for('index'))
-    cursor = util.add_friend(g.conn, session['uid'], request.form['uid'])
+    cursor = qry.add_friend(g.conn, session['uid'], request.form['uid'])
     cursor.close()
     return redirect(url_for('index'))
 
@@ -270,8 +270,8 @@ def remove_friend():
     if 'uid' not in session:
         print("reached /remove-friend with no session['uid']; return to index")
         return redirect(url_for('index'))
-    cursor = util.delete_friend(g.conn, session['uid'],
-                                request.form['delete_uid'])
+    cursor = qry.delete_friend(g.conn, session['uid'],
+                               request.form['delete_uid'])
     cursor.close()
     return redirect(url_for('index'))
 
@@ -281,7 +281,7 @@ def add_artist():
     if 'uid' not in session:
         print("reached /add-artist with no session['uid']; return to index")
         return redirect(url_for('index'))
-    cursor = util.add_artist(g.conn, session['uid'], request.form['aid'])
+    cursor = qry.add_artist(g.conn, session['uid'], request.form['aid'])
     cursor.close()
     return redirect(url_for('index'))
 
@@ -291,8 +291,8 @@ def remove_artist():
     if 'uid' not in session:
         print("reached /remove-artist with no session['uid']; return to index")
         return redirect(url_for('index'))
-    cursor = util.delete_artist(g.conn, session['uid'],
-                                request.form['delete_aid'])
+    cursor = qry.delete_artist(g.conn, session['uid'],
+                               request.form['delete_aid'])
     cursor.close()
     return redirect(url_for('index'))
 
