@@ -243,9 +243,10 @@ def index():
     return render_template("index.html", **context)
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    session['uid'] = request.form['uid']
+    if request.method == 'POST':
+        session['uid'] = request.form['uid']
     return redirect(url_for('index'))
 
 
@@ -295,6 +296,14 @@ def remove_artist():
                                request.form['delete_aid'])
     cursor.close()
     return redirect(url_for('index'))
+
+
+@app.route('/new-user', methods=['POST'])
+def new_user():
+    cursor, uid = qry.new_user(g.conn, request.form['uname'])
+    cursor.close()
+    session['uid'] = uid
+    return redirect(url_for('login'))
 
 
 #

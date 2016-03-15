@@ -64,3 +64,18 @@ def uname(conn, uid):
     qry = "SELECT uname FROM users WHERE uid = %s;"
     args = uid
     return conn.execute(qry, args)
+
+
+def max_uid(conn):
+    qry = "SELECT max(uid) AS max_uid FROM users;"
+    return conn.execute(qry)
+
+
+def new_user(conn, uname):
+    cursor = max_uid(conn)
+    uid = cursor.first()['max_uid'] + 1
+    cursor.close()
+    qry = "INSERT INTO users (uid, uname) " \
+          "VALUES (%s, %s);"
+    args = uid, uname
+    return conn.execute(qry, args), uid
