@@ -37,6 +37,29 @@ def artist_follows(conn, uid):
     return conn.execute(qry, args)
 
 
+def not_followed(conn, uid):
+    qry = "SELECT a.aid, a.aname FROM artists a " \
+          "WHERE a.aid NOT IN " \
+          "(SELECT f.aid FROM follow f " \
+          "WHERE f.uid = %s);"
+    args = uid
+    return conn.execute(qry, args)
+
+
+def add_artist(conn, uid, aid):
+    qry = "INSERT INTO follow (uid, aid) " \
+          "VALUES (%s, %s);"
+    args = uid, aid
+    return conn.execute(qry, args)
+
+
+def delete_artist(conn, uid, aid):
+    qry = "DELETE FROM follow " \
+          "WHERE uid = %s AND aid = %s;"
+    args = uid, aid
+    return conn.execute(qry, args)
+
+
 def uname(conn, uid):
     qry = "SELECT uname FROM users WHERE uid = %s;"
     args = uid

@@ -218,8 +218,14 @@ def user_dashboard():
         artist_follows[r['aid']] = r
     cursor.close()
 
+    cursor = util.not_followed(g.conn, uid)
+    not_followed = {}
+    for r in cursor:
+        not_followed[r['aid']] = r
+    cursor.close()
+
     context = dict(user=name, friends=friends, not_friends=not_friends,
-                   artist_follows=artist_follows)
+                   artist_follows=artist_follows, not_followed=not_followed)
     return render_template('user-dashboard.html', **context)
 
 
@@ -262,10 +268,31 @@ def add_friend():
 @app.route('/remove-friend', methods=['POST'])
 def remove_friend():
     if 'uid' not in session:
-        print("reached /delete-friend with no session['uid']; return to index")
+        print("reached /remove-friend with no session['uid']; return to index")
         return redirect(url_for('index'))
     cursor = util.delete_friend(g.conn, session['uid'],
                                 request.form['delete_uid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+
+@app.route('/add-artist', methods=['POST'])
+def add_artist():
+    if 'uid' not in session:
+        print("reached /add-artist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = util.add_artist(g.conn, session['uid'], request.form['aid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+
+@app.route('/remove-artist', methods=['POST'])
+def remove_artist():
+    if 'uid' not in session:
+        print("reached /remove-artist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = util.delete_artist(g.conn, session['uid'],
+                                request.form['delete_aid'])
     cursor.close()
     return redirect(url_for('index'))
 

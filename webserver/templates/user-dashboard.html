@@ -57,6 +57,17 @@
       </ul>
   </p>
 
+  <p>Follow another artist:
+    <form action="/add-artist" method="POST">
+      <select name="aid" id="artist">
+        {% for aid, d in not_followed.items() %}
+            <div> <option value="{{ aid }}"> {{ d['aname'] }} </option> </div>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Follow artist">
+    </form>
+  </p>
+
 
 </body>
 
