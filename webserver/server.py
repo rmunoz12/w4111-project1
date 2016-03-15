@@ -196,24 +196,30 @@ def index_example():
     return render_template("index-example.html", **context)
 
 
-# @app.route('/user-dashboard', methods=['POST'])
 def user_dashboard():
-    g.uid = session['uid']
-    name = util.uname(g.conn, g.uid).first()['uname']
+    uid = session['uid']
+    name = util.uname(g.conn, uid).first()['uname']
 
-    cursor = util.friends(g.conn, g.uid)
+    cursor = util.friends(g.conn, uid)
     friends = {}
     for r in cursor:
         friends[r['friend_uid']] = r
     cursor.close()
 
-    cursor = util.not_friends(g.conn, g.uid)
+    cursor = util.not_friends(g.conn, uid)
     not_friends = {}
     for r in cursor:
         not_friends[r['uid']] = r
     cursor.close()
 
-    context = dict(user=name, friends=friends, not_friends=not_friends)
+    cursor = util.artist_follows(g.conn, uid)
+    artist_follows = {}
+    for r in cursor:
+        artist_follows[r['aid']] = r
+    cursor.close()
+
+    context = dict(user=name, friends=friends, not_friends=not_friends,
+                   artist_follows=artist_follows)
     return render_template('user-dashboard.html', **context)
 
 

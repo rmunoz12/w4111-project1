@@ -13,6 +13,8 @@
 <body>
   <h1>Hello, {{ user }}.</h1>
 
+  <p><a href="/logout">Select another user.</a></p>
+
   <p>
   {# Example: http://stackoverflow.com/questions/10407433/how-do-i-get-my-html-button-to-delete-the-right-list-item-from-a-sqlite-database#}
       Users you follow:
@@ -40,7 +42,21 @@
     </form>
   </p>
 
-  <p><a href="/logout">Select another user.</a></p>
+  <p>
+    Artists you follow:
+    <ul>
+      {% for aid, d in artist_follows.items() %}
+        <form action="/remove-artist" method="POST" class="remove-artist">
+        <li> <input type="submit" value="X"></input> {{ d['aname'] }}
+
+          <input type=hidden value="{{ d['aid'] }}" name="delete_aid"></input>
+
+          </form>
+          </li>
+      {% endfor %}
+      </ul>
+  </p>
+
 
 </body>
 

@@ -30,6 +30,12 @@ def delete_friend(conn, origin_uid, friend_uid):
     return conn.execute(qry, args)
 
 
+def artist_follows(conn, uid):
+    qry = "SELECT a.aid, a.aname FROM artists a, follow f " \
+          "WHERE f.uid = %s AND a.aid = f.aid;"
+    args = uid
+    return conn.execute(qry, args)
+
 
 def uname(conn, uid):
     qry = "SELECT uname FROM users WHERE uid = %s;"
