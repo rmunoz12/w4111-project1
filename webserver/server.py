@@ -18,6 +18,7 @@ Read about it online.
 
 import json
 import os
+import re
 import traceback
 
 from sqlalchemy import *
@@ -239,7 +240,8 @@ def index():
         users[result['uid']] = result['uname']
     cursor.close()
 
-    context = dict(data=users)
+    context = dict(data=users, bad_uname=session.get('bad_uname'))
+    session['bad_uname'] = False
     return render_template("index.html", **context)
 
 
@@ -300,9 +302,14 @@ def remove_artist():
 
 @app.route('/new-user', methods=['POST'])
 def new_user():
-    cursor, uid = qry.new_user(g.conn, request.form['uname'])
-    cursor.close()
-    session['uid'] = uid
+    uname = request.form['uname']
+    pattern = '^[a-z A-Z][a-zA-Z0-9]*$'
+    if re.match(pattern, uname):
+        cursor, uid = qry.new_user(g.conn, request.form['uname'])
+        cursor.close()
+        session['uid'] = uid
+    else:
+        session['bad_uname'] = True
     return redirect(url_for('login'))
 
 

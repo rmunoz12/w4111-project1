@@ -22,7 +22,11 @@
 
   <form method="POST" action="/new-user">
     <p>Or create a new user: <input type="text" name="uname">
-      <input type="submit" value="Create"></p>
+      <input type="submit" value="Create">
+      {% if bad_uname %}
+        Invalid user name, try again.
+      {% endif %}
+    </p>
   </form>
 
 
