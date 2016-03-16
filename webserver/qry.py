@@ -64,3 +64,9 @@ def uname(conn, uid):
     qry = "SELECT uname FROM users WHERE uid = %s;"
     args = uid
     return conn.execute(qry, args)
+
+
+def aname(conn, aid):
+    qry = "SELECT aname FROM artists WHERE aid = %s;"
+    args = aid
+    return conn.execute(qry, args)

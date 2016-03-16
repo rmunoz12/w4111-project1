@@ -297,6 +297,20 @@ def remove_artist():
     return redirect(url_for('index'))
 
 
+@app.route('/artist')
+def artist():
+    if not request.args.get('aid'):
+        return "No aid passed"
+    cursor = qry.aname(g.conn, request.args['aid'])
+    r = cursor.first()
+    if not r:
+        return "Unrecognized aid"
+    aname = r['aname']
+    cursor.close()
+    context = dict(aid=request.args['aid'], aname=aname)
+    return render_template('artist.html', **context)
+
+
 #
 # This is an example of a different path.  You can see it at
 # 

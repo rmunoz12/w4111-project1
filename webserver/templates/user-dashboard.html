@@ -47,7 +47,7 @@
     <ul>
       {% for aid, d in artist_follows.items() %}
         <form action="/remove-artist" method="POST" class="remove-artist">
-        <li> <input type="submit" value="X"></input> {{ d['aname'] }}
+        <li> <input type="submit" value="X"></input> <a href="/artist?aid={{ d['aid'] }}">{{ d['aname'] }}</a>
 
           <input type=hidden value="{{ d['aid'] }}" name="delete_aid"></input>
 
