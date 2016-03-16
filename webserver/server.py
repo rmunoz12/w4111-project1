@@ -301,13 +301,22 @@ def remove_artist():
 def artist():
     if not request.args.get('aid'):
         return "No aid passed"
-    cursor = qry.aname(g.conn, request.args['aid'])
+    aid = request.args['aid']
+    cursor = qry.aname(g.conn, aid)
     r = cursor.first()
     if not r:
         return "Unrecognized aid"
     aname = r['aname']
     cursor.close()
-    context = dict(aid=request.args['aid'], aname=aname)
+
+    cursor = qry.publish(g.conn, aid)
+    albums = []
+    for r in cursor:
+        d = {r['albumid']: r}
+        albums.append(d)
+    cursor.close()
+
+    context = dict(aid=aid, aname=aname, albums=albums)
     return render_template('artist.html', **context)
 
 

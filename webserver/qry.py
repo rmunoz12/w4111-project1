@@ -70,3 +70,12 @@ def aname(conn, aid):
     qry = "SELECT aname FROM artists WHERE aid = %s;"
     args = aid
     return conn.execute(qry, args)
+
+
+def publish(conn, aid):
+    qry = "SELECT a.albumid, a.albumname, p.since, a.artlink " \
+          "FROM publish p, albums a " \
+          "WHERE a.albumid = p.albumid AND p.aid = %s " \
+          "ORDER BY since DESC;"
+    args = aid
+    return conn.execute(qry, args)

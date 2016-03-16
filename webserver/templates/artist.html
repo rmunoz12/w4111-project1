@@ -8,7 +8,14 @@
 
 
 <body>
-  <h1>Artist page: {{ aname }}</h1>
+  <h1>{{ aname }}</h1>
+
+  {% for d in albums %}
+    {% for albumid, r in d.items() %}
+      <p><img src="{{ r['artlink'] }}">{{ r['albumname'] }}</p>
+    {% endfor %}
+  {% endfor %}
+
 
 
 
