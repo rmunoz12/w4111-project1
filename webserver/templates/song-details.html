@@ -23,6 +23,7 @@
   {% endif %}
   </h1>
   <input type=hidden value="{{ song_details['sid'] }}" name="sid"></input>
+  <input type=hidden value="song" name="redirect"></input>
   </form>
   <audio controls>
     <source src="{{ song_details['link'] }}" type="audio/mpeg">

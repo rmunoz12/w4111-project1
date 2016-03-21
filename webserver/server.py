@@ -381,6 +381,8 @@ def like_or_unlike():
         cursor.close()
     if request.form['redirect'] == 'artist':
         return redirect(url_for('artist', aid=request.form['aid']))
+    if request.form['redirect'] == 'song':
+        return redirect(url_for('song', sid=request.form['sid']))
     return redirect(url_for('index'))
 
 
