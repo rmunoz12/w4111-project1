@@ -1,7 +1,7 @@
 <html>
   <style>
     body{
-      font-size: 15pt;
+      font-size: 11pt;
       font-family: arial;
     }
     ul {
@@ -9,6 +9,18 @@
     }
   </style>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+{#  http://stackoverflow.com/questions/20719550/play-one-html-audio-element-at-a-time#}
+<script>
+  $(function(){
+    $("audio").on("play", function() {
+        $("audio").not(this).each(function(index, audio) {
+            audio.pause();
+        });
+    });
+  });
+</script>
 
 <body>
   <h1>These are the songs we found for you</h1>
@@ -17,7 +29,7 @@
       {% for sid, d in songs.items() %}
         <form action="/add_playlist" method="POST" class="add_playlist">
         <li> <input type="submit" value="Add to playlist"></input> {{ d['sname']}} | {{d['aname']}} | {{d['albumname']}} <a href="/song?sid={{ d['sid'] }}"><img alt="i" src="/static/Sign-Info-icon.png" height="12"></a>
-          <audio controls>
+          <br><audio controls>
             <source src="{{ d['link'] }}" type="audio/mpeg">
             <a href="{{ d['link'] }}">Listen</a>
           </audio>
