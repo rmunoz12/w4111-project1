@@ -195,3 +195,10 @@ def like(conn, uid, sid):
           "VALUES (%s, %s);"
     args = uid, sid
     return conn.execute(qry, args)
+
+
+def remove_playlist_song(conn, cid, pid, sid):
+    qry = "DELETE FROM added " \
+          "WHERE uid = %s AND pid = %s AND sid = %s"
+    args = cid, pid, sid
+    return conn.execute(qry, args)

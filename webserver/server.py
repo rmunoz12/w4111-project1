@@ -436,6 +436,21 @@ def like_or_unlike():
     return redirect(url_for('index'))
 
 
+@app.route('/remove-playlist-song', methods=['POST'])
+def remove_playlist_song():
+    if 'uid' not in session:
+        print("reached /remove-playlist-song with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    pid = request.form['pid']
+    cid = request.form['cid']
+    sid = request.form['sid']
+
+    cursor = qry.remove_playlist_song(g.conn, cid, pid, sid)
+    cursor.close()
+
+    return redirect(url_for('playlist', pid=pid, cid=cid))
+
+
 if __name__ == "__main__":
     @click.command()
     @click.option('--debug', is_flag=True)

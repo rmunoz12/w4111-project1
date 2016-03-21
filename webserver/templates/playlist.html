@@ -29,9 +29,17 @@
 
       <ul>
       {% for sid, d in songs1.items() %}
-        <form action="/like-or-unlike" method="POST" class="like-or-unlike">
+        <form action="/remove-playlist-song" method="POST" class="remove-song"
+              style="float: left;">
+          <input name="submit" type="submit" value="Remove"></input>
+          <input type=hidden value="{{ d['sid'] }}" name="sid"></input>
+          <input type=hidden value="{{ pid }}" name="pid"></input>
+          <input type=hidden value="{{ cid }}" name="cid"></input>
+        </form>
+        <form action="/like-or-unlike" method="POST" class="like-or-unlike"
+              style="display: inline;">
         <li>
-          <audio controls>
+          <audio controls >
             <source src="{{ d['link'] }}" type="audio/mpeg">
             <a href="{{ d['link'] }}">Listen</a>
           </audio>
