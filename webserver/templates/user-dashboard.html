@@ -68,6 +68,45 @@
     </form>
   </p>
 
+    <p>Search for a song:
+    <form action="/songs" method="POST">
+      <input type="text" name="song" value="">
+        
+      <input type="submit" value="Search">
+    </form>
+  </p>
+
+
+  <p>
+    Playlists you subscribed:
+    <ul>
+      {% for pname, d in playlist_subscribed.items() %}
+        <form action="/remove-playlist" method="POST" class="remove-playlist">
+        <li> <input type="submit" value="X"></input> {{ d['pname']}}
+
+          <input type=hidden value="{{ d['pid'] }}" name="remove_pid"></input>
+
+          </form>
+          </li>
+      {% endfor %}
+      </ul>
+  </p>
+
+  
+  <p>
+    Playlists you created:
+    <ul>
+      {% for pname, d in playlist_created.items() %}
+        <form action="/delete-playlist" method="POST" class="delete-playlist">
+        <li> <input type="submit" value="X"></input> {{ d['pname']}}
+
+          <input type=hidden value="{{ d['pid'] }}" name="delete_pid"></input>
+
+          </form>
+          </li>
+      {% endfor %}
+      </ul>
+  </p>
 
 </body>
 

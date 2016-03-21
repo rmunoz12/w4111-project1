@@ -98,3 +98,36 @@ def song_details(conn, sid):
           "      AND s.sid = %s;"
     args = sid
     return conn.execute(qry, args)
+
+def search_songs(conn, song):
+    song= "%" + song + "%"
+    qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
+          "FROM songs s, contain c, albums aa, publish p, artists a " \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid AND aa.albumid = p.albumid AND p.aid = a.aid AND s.sname ILIKE %s"
+    args = song
+    return conn.execute(qry, args)
+
+
+def playlist_subscribed(conn, uid):
+    qry = "SELECT p.pname, p.pid FROM subscribe s, playlists p WHERE s.pid = p.pid AND s.subscriber_uid = %s;"
+    args = uid
+    return conn.execute(qry, args)
+
+def remove_playlist(conn, uid, pid):
+    qry = "DELETE FROM subscribe WHERE subscriber_uid = %s AND pid = %s;"
+    args = uid, pid
+    return conn.execute(qry,args)
+
+def playlist_created(conn, uid):
+    qry = "SELECT pname, pid FROM playlists WHERE creater_uid = %s;"
+    args = uid
+    return conn.execute(qry, args)
+
+def delete_playlist(conn, pid):
+    qry = "DELETE FROM subscribe WHERE pid = %s; DELETE FROM added WHERE pid = %s; DELETE FROM Playlists WHERE pid = %s;"
+    args = pid, pid, pid
+    return conn.execute(qry, args)
+    
+
+
+

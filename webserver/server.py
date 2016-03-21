@@ -32,6 +32,7 @@ import qry
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
+
 #
 # The following uses the sqlite3 database test.db -- you can use this for debugging purposes
 # However for the project you will need to connect to your Part 2 database in order to use the
@@ -58,6 +59,7 @@ with open('config.json') as f:
 DATABASEURI = config['db_path']
 
 app.secret_key = config['secret']
+
 
 #
 # This line creates a database engine that knows how to connect to the URI above
@@ -225,8 +227,21 @@ def user_dashboard():
         not_followed[r['aid']] = r
     cursor.close()
 
+    cursor = qry.playlist_subscribed(g.conn, uid)
+    playlist_subscribed = {}
+    for r in cursor:
+        playlist_subscribed[r['pid']] = r
+    cursor.close()
+
+    cursor = qry.playlist_created(g.conn, uid)
+    playlist_created = {}
+    for r in cursor:
+        playlist_created[r['pid']] = r
+    cursor.close()
+
     context = dict(user=name, friends=friends, not_friends=not_friends,
-                   artist_follows=artist_follows, not_followed=not_followed)
+                   artist_follows=artist_follows, not_followed=not_followed,
+                   playlist_subscribed=playlist_subscribed, playlist_created=playlist_created)
     return render_template('user-dashboard.html', **context)
 
 
@@ -296,6 +311,43 @@ def remove_artist():
                                request.form['delete_aid'])
     cursor.close()
     return redirect(url_for('index'))
+
+@app.route('/remove-playlist', methods=['POST'])
+def remove_playlist():
+    if 'uid' not in session:
+        print("reached /remove-playlist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = qry.remove_playlist(g.conn, session['uid'], request.form['remove_pid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+@app.route('/delete-playlist', methods=['POST'])
+def delete_playlist():
+    if 'uid' not in session:
+        print("reached /delete-playlist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = qry.delete_playlist(g.conn, request.form['delete_pid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+
+@app.route('/songs', methods=['POST'])
+def songs():
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+    if 'uid' not in session:
+        print("reached /songs with no session['uid']; return to index")
+        return redirect(url_for('index'))
+
+    cursor = qry.search_songs(g.conn, request.form['song'])
+    songs = {}
+    for r in cursor:
+        songs[r['sid']] = r
+    cursor.close()
+
+    context = dict(user=name, songs=songs)
+    return render_template("songs.html", **context)
+
 
 
 @app.route('/artist')
