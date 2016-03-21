@@ -226,8 +226,21 @@ def user_dashboard():
         not_followed[r['aid']] = r
     cursor.close()
 
+    cursor = qry.playlist_subscribed(g.conn, uid)
+    playlist_subscribed = {}
+    for r in cursor:
+        playlist_subscribed[r['pid']] = r
+    cursor.close()
+
+    cursor = qry.playlist_created(g.conn, uid)
+    playlist_created = {}
+    for r in cursor:
+        playlist_created[r['pid']] = r
+    cursor.close()
+
     context = dict(user=name, friends=friends, not_friends=not_friends,
-                   artist_follows=artist_follows, not_followed=not_followed)
+                   artist_follows=artist_follows, not_followed=not_followed,
+                   playlist_subscribed=playlist_subscribed, playlist_created=playlist_created)
     return render_template('user-dashboard.html', **context)
 
 
