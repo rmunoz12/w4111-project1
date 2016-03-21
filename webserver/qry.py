@@ -101,11 +101,10 @@ def song_details(conn, sid):
 
 
 def search_songs(conn, song):
-    song= "%" + song + "%"
     qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
           "FROM songs s, contain c, albums aa, publish p, artists a " \
           "WHERE s.sid = c.sid AND c.albumid = aa.albumid AND aa.albumid = p.albumid AND p.aid = a.aid AND s.sname ILIKE %s"
-    args = song
+    args = "%" + song + "%"
     return conn.execute(qry, args)
 
 

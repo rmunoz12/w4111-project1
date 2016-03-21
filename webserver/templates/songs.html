@@ -1,7 +1,7 @@
 <html>
   <style>
     body{
-      font-size: 11pt;
+      font-size: 15pt;
       font-family: arial;
     }
     ul {
@@ -23,6 +23,12 @@
 </script>
 
 <body>
+
+  <span style="font-size: small; ">
+    Signed in as: {{ user }} <br>
+    <a href="/"> Return to Dashboard</a>
+  </span>
+
   <h1>These are the songs we found for you</h1>
 
       <ul>
@@ -40,11 +46,6 @@
           </li>
       {% endfor %}
       </ul>
-
-
-  <p><a href="/">Go back to dashbord</a></p>
-
-  <p><a href="/logout">Select another user.</a></p>
 
 </body>
 </html>
