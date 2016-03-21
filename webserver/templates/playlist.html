@@ -10,6 +10,20 @@
   </style>
 
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+{#  http://stackoverflow.com/questions/20719550/play-one-html-audio-element-at-a-time#}
+<script>
+  $(function(){
+    $("audio").on("play", function() {
+        $("audio").not(this).each(function(index, audio) {
+            audio.pause();
+        });
+    });
+  });
+</script>
+
+
 <body>
   <h1>Playlist: {{pname}}</h1>
 
