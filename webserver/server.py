@@ -207,6 +207,7 @@ def remove_artist():
     cursor.close()
     return redirect(url_for('index'))
 
+
 @app.route('/remove-playlist', methods=['POST'])
 def remove_playlist():
     if 'uid' not in session:
@@ -242,7 +243,6 @@ def songs():
 
     context = dict(user=name, songs=songs)
     return render_template("songs.html", **context)
-
 
 
 @app.route('/artist')
