@@ -144,7 +144,9 @@ def user_dashboard():
 
     context = dict(user=name, friends=friends, not_friends=not_friends,
                    artist_follows=artist_follows, not_followed=not_followed,
-                   playlist_subscribed=playlist_subscribed, playlist_created=playlist_created, playlist_not_subscribed=playlist_not_subscribed)
+                   playlist_subscribed=playlist_subscribed,
+                   playlist_created=playlist_created,
+                   playlist_not_subscribed=playlist_not_subscribed)
     return render_template('user-dashboard.html', **context)
 
 
@@ -230,7 +232,9 @@ def remove_playlist():
     if 'uid' not in session:
         print("reached /remove-playlist with no session['uid']; return to index")
         return redirect(url_for('index'))
-    cursor = qry.remove_playlist(g.conn, session['uid'], request.form['remove_pid'])
+    cursor = qry.remove_playlist(g.conn, session['uid'],
+                                 request.form['remove_pid'],
+                                 request.form['remove_cid'])
     cursor.close()
     return redirect(url_for('index'))
 
@@ -240,7 +244,8 @@ def delete_playlist():
     if 'uid' not in session:
         print("reached /delete-playlist with no session['uid']; return to index")
         return redirect(url_for('index'))
-    cursor = qry.delete_playlist(g.conn, request.form['delete_pid'])
+    cursor = qry.delete_playlist(g.conn, request.form['delete_pid'],
+                                 request.form['delete_cid'])
     cursor.close()
     return redirect(url_for('index'))
 
@@ -281,12 +286,13 @@ def playlist():
     if not request.args.get('pid'):
         return "No pid passed"
     pid = request.args['pid']
-    cursor = qry.playlist_songs(g.conn, pid)
+    cid = request.args['cid']
+    cursor = qry.playlist_songs(g.conn, pid, cid)
     songs1 = {}
     for r in cursor:
         songs1[r['sid']] = r
     cursor.close()
-    plname=qry.playlist_name(g.conn, pid).first()['pname']
+    plname = qry.playlist_name(g.conn, pid, cid).first()['pname']
 
     cursor = qry.liked_songs(g.conn, uid)
     likes = set()
@@ -294,7 +300,8 @@ def playlist():
         likes.add(r['sid'])
     cursor.close()
 
-    context = dict(user=name, songs1=songs1, pname=plname, likes=likes, pid=pid)
+    context = dict(user=name, songs1=songs1, pname=plname, likes=likes, pid=pid,
+                   cid=cid)
     return render_template('playlist.html', **context)
 
 @app.route('/artist')
@@ -424,7 +431,8 @@ def like_or_unlike():
     if request.form['redirect'] == 'song':
         return redirect(url_for('song', sid=request.form['sid']))
     if request.form['redirect'] == 'playlist':
-        return redirect(url_for('playlist', pid=request.form['pid']))
+        return redirect(url_for('playlist', pid=request.form['pid'],
+                                cid=request.form['cid']))
     return redirect(url_for('index'))
 
 

@@ -109,16 +109,20 @@ def search_songs(conn, song):
     args = "%" + song + "%"
     return conn.execute(qry, args)
 
-def playlist_songs(conn, pid):
+def playlist_songs(conn, pid, cid):
     qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
-          "FROM songs s, contain c, albums aa, added aaa, publish p, artists a, playlists pl " \
-          "WHERE s.sid = c.sid AND c.albumid = aa.albumid AND aa.albumid = p.albumid AND p.aid = a.aid AND aaa.sid = s.sid AND aaa.pid = pl.pid AND pl.pid = %s"
-    args = pid
+          "FROM songs s, contain c, albums aa, added aaa, publish p, artists a, " \
+          "     playlists pl " \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid " \
+          "      AND aa.albumid = p.albumid AND p.aid = a.aid " \
+          "      AND aaa.sid = s.sid AND aaa.pid = pl.pid " \
+          "      AND pl.pid = %s AND pl.creater_uid = %s"
+    args = pid, cid
     return conn.execute(qry, args)
 
-def playlist_name(conn, pid):
-    qry = "SELECT pname FROM playlists WHERE pid = %s;"
-    args = pid
+def playlist_name(conn, pid, cid):
+    qry = "SELECT pname FROM playlists WHERE pid = %s AND creater_uid = %s;"
+    args = pid, cid
     return conn.execute(qry, args)
 
 
@@ -129,7 +133,7 @@ def add_playlist(conn, uid, creater_uid, pid):
 
 
 def playlist_subscribed(conn, uid):
-    qry = "SELECT p.pname, p.pid FROM subscribe s, playlists p WHERE s.pid = p.pid AND s.subscriber_uid = %s;"
+    qry = "SELECT p.pname, p.pid, p.creater_uid FROM subscribe s, playlists p WHERE s.pid = p.pid AND s.subscriber_uid = %s;"
     args = uid
     return conn.execute(qry, args)
 
@@ -143,21 +147,28 @@ def playlist_not_subscribed(conn, uid):
     return conn.execute(qry, args)
 
 
-def remove_playlist(conn, uid, pid):
-    qry = "DELETE FROM subscribe WHERE subscriber_uid = %s AND pid = %s;"
-    args = uid, pid
-    return conn.execute(qry,args)
+def remove_playlist(conn, uid, pid, cid):
+    qry = "DELETE FROM subscribe " \
+          "WHERE subscriber_uid = %s AND pid = %s AND creater_uid = %s;"
+    args = uid, pid, cid
+    return conn.execute(qry, args)
 
 
 def playlist_created(conn, uid):
-    qry = "SELECT pname, pid FROM playlists WHERE creater_uid = %s;"
+    qry = "SELECT pname, pid, creater_uid FROM playlists WHERE creater_uid = %s;"
     args = uid
     return conn.execute(qry, args)
 
 
-def delete_playlist(conn, pid):
-    qry = "DELETE FROM subscribe WHERE pid = %s; DELETE FROM added WHERE pid = %s; DELETE FROM Playlists WHERE pid = %s;"
-    args = pid, pid, pid
+# TODO add creater_uid to added
+def delete_playlist(conn, pid, cid):
+    qry = "DELETE FROM subscribe " \
+          "WHERE pid = %s AND creater_uid = %s; " \
+          "DELETE FROM added " \
+          "WHERE pid = %s; " \
+          "DELETE FROM Playlists " \
+          "WHERE pid = %s AND creater_uid = %s;"
+    args = pid, cid, pid, pid, cid
     return conn.execute(qry, args)
     
 
