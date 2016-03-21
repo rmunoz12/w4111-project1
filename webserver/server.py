@@ -330,6 +330,16 @@ def library():
     return render_template('library.html', **context)
 
 
+@app.route('/unlike', methods=['POST'])
+def unlike():
+    if 'uid' not in session:
+        print("reached /unlike with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = qry.unlike(g.conn, session['uid'], request.form['unlike_sid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+
 if __name__ == "__main__":
     @click.command()
     @click.option('--debug', is_flag=True)

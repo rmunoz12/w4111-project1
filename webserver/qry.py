@@ -141,3 +141,10 @@ def liked_songs(conn, uid):
           "      AND l.uid = %s;"
     args = uid
     return conn.execute(qry, args)
+
+
+def unlike(conn, uid, sid):
+    qry = "DELETE FROM likes " \
+          "WHERE uid = %s AND sid = %s;"
+    args = uid, sid
+    return conn.execute(qry, args)
