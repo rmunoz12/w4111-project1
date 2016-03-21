@@ -132,5 +132,12 @@ def delete_playlist(conn, pid):
     return conn.execute(qry, args)
     
 
-
-
+def liked_songs(conn, uid):
+    qry = "SELECT * " \
+          "FROM likes l, songs s, contain c, albums alb, publish p, " \
+          "     artists a " \
+          "WHERE l.sid = s.sid AND s.sid = c.sid AND c.albumid = alb.albumid " \
+          "      AND p.albumid = alb.albumid AND p.aid = a.aid " \
+          "      AND l.uid = %s;"
+    args = uid
+    return conn.execute(qry, args)

@@ -229,11 +229,11 @@ def delete_playlist():
 
 @app.route('/songs', methods=['POST'])
 def songs():
-    uid = session['uid']
-    name = qry.uname(g.conn, uid).first()['uname']
     if 'uid' not in session:
         print("reached /songs with no session['uid']; return to index")
         return redirect(url_for('index'))
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
 
     cursor = qry.search_songs(g.conn, request.form['song'])
     songs = {}
@@ -247,6 +247,9 @@ def songs():
 
 @app.route('/artist')
 def artist():
+    if 'uid' not in session:
+        print("reached /artist with no session['uid']; return to index")
+        return redirect(url_for('index'))
     uid = session['uid']
     name = qry.uname(g.conn, uid).first()['uname']
 
@@ -284,6 +287,9 @@ def artist():
 
 @app.route('/song')
 def song():
+    if 'uid' not in session:
+        print("reached /song with no session['uid']; return to index")
+        return redirect(url_for('index'))
     uid = session['uid']
     name = qry.uname(g.conn, uid).first()['uname']
 
@@ -304,6 +310,24 @@ def song():
 
     context = dict(user=name, song_details=song_details)
     return render_template('song-details.html', **context)
+
+
+@app.route('/library')
+def library():
+    if 'uid' not in session:
+        print("reached /library with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+
+    cursor = qry.liked_songs(g.conn, uid)
+    likes = []
+    for r in cursor:
+        likes.append(r)
+    cursor.close()
+
+    context = dict(user=name, likes=likes)
+    return render_template('library.html', **context)
 
 
 if __name__ == "__main__":
