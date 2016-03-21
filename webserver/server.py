@@ -319,7 +319,17 @@ def song():
                                song_details['minutes'] * 1000 * 60) / 1000
     song_details['seconds'] = int(round(song_details['seconds']))
 
-    context = dict(user=name, song_details=song_details)
+    cursor = qry.liked_songs(g.conn, uid)
+    likes = set()
+    for r in cursor:
+        likes.add(r['sid'])
+    cursor.close()
+
+    liked = False
+    if sid in likes:
+        liked = True
+
+    context = dict(user=name, song_details=song_details, liked=liked)
     return render_template('song-details.html', **context)
 
 

@@ -14,7 +14,16 @@
   <a href="/"> Return to Dashboard</a>
   </span>
 
-  <h1>{{ song_details['sname'] }}</h1>
+  <form action="/like-or-unlike" method="POST" class="like-or-unlike">
+  <h1>{{ song_details['sname'] }}
+  {% if not liked %}
+    <input name="submit" type="submit" value="+" style="background-color: lightgreen"></input>
+  {% else %}
+    <input name="submit" type="submit" value="X"></input>
+  {% endif %}
+  </h1>
+  <input type=hidden value="{{ song_details['sid'] }}" name="sid"></input>
+  </form>
   <audio controls>
     <source src="{{ song_details['link'] }}" type="audio/mpeg">
     <a href="{{ song_details['link'] }}">Listen</a>
