@@ -1,7 +1,7 @@
 <html>
   <style>
     body{
-      font-size: 15pt;
+      font-size: 12pt;
       font-family: arial;
     }
     ul {
@@ -15,13 +15,24 @@
 
       <ul>
       {% for sid, d in songs1.items() %}
-        <form action="/add_playlist" method="POST" class="add_playlist">
-        <li> <input type="submit" value="X"></input> {{ d['sname']}} {{d['aname']}}{{d['albumname']}} <a href="{{ d['link'] }}">Listen</a>
+        <form action="/like-or-unlike" method="POST" class="like-or-unlike">
+        <li>
+          <audio controls>
+            <source src="{{ d['link'] }}" type="audio/mpeg">
+            <a href="{{ d['link'] }}">Listen</a>
+          </audio>
+          {% if d['sid'] not in likes %}
+            <input name="submit" type="submit" value="+" style="background-color: lightgreen"></input>
+          {% else %}
+            <input name="submit" type="submit" value="X"></input>
+          {% endif %}
+          {{ d['sname']}} | {{d['aname']}} | {{d['albumname']}}
+          <input type=hidden value="{{ d['sid'] }}" name="sid"></input>
+          <input type=hidden value="{{ pid }}" name="pid"></input>
+          <input type=hidden value="playlist" name="redirect"></input>
 
-          <input type=hidden value="{{ d['s.sid'] }}" name="add_sid"></input>
-
-          </form>
-          </li>
+        </li>
+        </form>
       {% endfor %}
       </ul>
 

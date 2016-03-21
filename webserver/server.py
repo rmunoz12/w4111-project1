@@ -287,8 +287,14 @@ def playlist():
         songs1[r['sid']] = r
     cursor.close()
     plname=qry.playlist_name(g.conn, pid).first()['pname']
-    
-    context = dict(user=name, songs1=songs1, pname = plname)
+
+    cursor = qry.liked_songs(g.conn, uid)
+    likes = set()
+    for r in cursor:
+        likes.add(r['sid'])
+    cursor.close()
+
+    context = dict(user=name, songs1=songs1, pname=plname, likes=likes, pid=pid)
     return render_template('playlist.html', **context)
 
 @app.route('/artist')
@@ -417,6 +423,8 @@ def like_or_unlike():
         return redirect(url_for('artist', aid=request.form['aid']))
     if request.form['redirect'] == 'song':
         return redirect(url_for('song', sid=request.form['sid']))
+    if request.form['redirect'] == 'playlist':
+        return redirect(url_for('playlist', pid=request.form['pid']))
     return redirect(url_for('index'))
 
 
