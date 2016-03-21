@@ -235,10 +235,21 @@ def songs():
     uid = session['uid']
     name = qry.uname(g.conn, uid).first()['uname']
 
+    cursor = qry.liked_songs(g.conn, uid)
+    likes = set()
+    for r in cursor:
+        likes.add(r['sid'])
+    cursor.close()
+
     cursor = qry.search_songs(g.conn, request.form['song'])
     songs = {}
     for r in cursor:
-        songs[r['sid']] = r
+        d = dict(r)
+        if d['sid'] in likes:
+            d['liked'] = True
+        else:
+            d['liked'] = False
+        songs[d['sid']] = d
     cursor.close()
 
     context = dict(user=name, songs=songs)
