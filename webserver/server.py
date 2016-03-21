@@ -348,7 +348,7 @@ def unlike():
         return redirect(url_for('index'))
     cursor = qry.unlike(g.conn, session['uid'], request.form['unlike_sid'])
     cursor.close()
-    return redirect(url_for('index'))
+    return redirect(url_for('library'))
 
 
 @app.route('/like-or-unlike', methods=['POST'])
