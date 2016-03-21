@@ -66,11 +66,13 @@ def uname(conn, uid):
     return conn.execute(qry, args)
 
 def search_songs(conn, song):
-    qry = "SELECT s.sname, s.link, aa.albumname, a.aname" \
-          "FROM Songs s, Contain c, Albums aa, Publish p, Artists a" \
-          "WHERE s.sid = c.sid AND c.albumid = aa.albumid AND aa.albumid = p.albumid AND p.aid = a.aid AND s.sname LIKE %'%s'%;"
+    song= "%" + song + "%"
+    qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
+          "FROM songs s, contain c, albums aa, publish p, artists a " \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid AND aa.albumid = p.albumid AND p.aid = a.aid AND s.sname ILIKE %s"
     args = song
     return conn.execute(qry, args)
+
 
 def playlist_subscribed(conn, uid):
     qry = "SELECT p.pname, p.pid FROM subscribe s, playlists p WHERE s.pid = p.pid AND s.subscriber_uid = %s;"

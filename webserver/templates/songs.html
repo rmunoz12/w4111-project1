@@ -14,9 +14,9 @@
   <h1>These are the songs we found for you</h1>
 
       <ul>
-      {% for s.sname, d in search_songs.items() %}
+      {% for sid, d in songs.items() %}
         <form action="/add_playlist" method="POST" class="add_playlist">
-        <li> <input type="submit" value="X"></input> {{ d['s.sname'] }} <a href="{{ d['s.link'] }}">Listen</a> {{ d['aa.albumname'] } { d['a.aname'] }}
+        <li> <input type="submit" value="Add to playlist"></input> {{ d['sname']}} {{d['aname']}}{{d['albumname']}} <a href="{{ d['link'] }}">Listen</a>
 
           <input type=hidden value="{{ d['s.sid'] }}" name="add_sid"></input>
 
@@ -26,7 +26,7 @@
       </ul>
 
 
-  <p><a href="/index">Go back to dashbord</a></p>
+  <p><a href="/">Go back to dashbord</a></p>
 
   <p><a href="/logout">Select another user.</a></p>
 

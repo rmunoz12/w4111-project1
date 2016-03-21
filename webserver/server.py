@@ -332,10 +332,21 @@ def delete_playlist():
 
 @app.route('/songs', methods=['POST'])
 def songs():
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
     if 'uid' not in session:
         print("reached /songs with no session['uid']; return to index")
         return redirect(url_for('index'))
-    return redirect(url_for('songs'))
+
+    cursor = qry.search_songs(g.conn, request.form['song'])
+    songs = {}
+    for r in cursor:
+        songs[r['sid']] = r
+    cursor.close()
+
+    context = dict(user=name, songs=songs)
+    return render_template("songs.html", **context)
+
 
 
 #
