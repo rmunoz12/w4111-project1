@@ -64,3 +64,34 @@ def uname(conn, uid):
     qry = "SELECT uname FROM users WHERE uid = %s;"
     args = uid
     return conn.execute(qry, args)
+
+def search_songs(conn, song):
+    qry = "SELECT s.sname, s.link, aa.albumname, a.aname" \
+          "FROM Songs s, Contain c, Albums aa, Publish p, Artists a" \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid AND aa.albumid = p.albumid AND p.aid = a.aid AND s.sname LIKE %'%s'%;"
+    args = song
+    return conn.execute(qry, args)
+
+def playlist_subscribed(conn, uid):
+    qry = "SELECT p.pname, p.pid FROM subscribe s, playlists p WHERE s.pid = p.pid AND s.subscriber_uid = %s;"
+    args = uid
+    return conn.execute(qry, args)
+
+def remove_playlist(con, uid, pid):
+    qry = "DELETE FROM subscribe WHERE subscriber_uid = %s AND pid = %s;"
+    args = uid, pid
+    return conn.execute(qry,args)
+
+def playlist_created(conn, uid):
+    qry = "SELECT pname, pid FROM playlists WHERE creater_uid = %s;"
+    args = uid
+    return conn.execute(qry, args)
+
+def delete_playlist(conn, pid):
+    qry = "DELETE FROM playlists WHERE pid = %s;"
+    args = pid
+    return conn.execute(qry, args)
+    
+
+
+

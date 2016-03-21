@@ -1,0 +1,34 @@
+<html>
+  <style>
+    body{
+      font-size: 15pt;
+      font-family: arial;
+    }
+    ul {
+    list-style-type: none;
+    }
+  </style>
+
+
+<body>
+  <h1>These are the songs we found for you</h1>
+
+      <ul>
+      {% for s.sname, d in search_songs.items() %}
+        <form action="/add_playlist" method="POST" class="add_playlist">
+        <li> <input type="submit" value="X"></input> {{ d['s.sname'] }} <a href="{{ d['s.link'] }}">Listen</a> {{ d['aa.albumname'] } { d['a.aname'] }}
+
+          <input type=hidden value="{{ d['s.sid'] }}" name="add_sid"></input>
+
+          </form>
+          </li>
+      {% endfor %}
+      </ul>
+
+
+  <p><a href="/index">Go back to dashbord</a></p>
+
+  <p><a href="/logout">Select another user.</a></p>
+
+</body>
+</html>

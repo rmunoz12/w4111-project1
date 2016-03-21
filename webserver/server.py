@@ -31,6 +31,7 @@ import qry
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
+
 #
 # The following uses the sqlite3 database test.db -- you can use this for debugging purposes
 # However for the project you will need to connect to your Part 2 database in order to use the
@@ -57,6 +58,7 @@ with open('config.json') as f:
 DATABASEURI = config['db_path']
 
 app.secret_key = config['secret']
+
 
 #
 # This line creates a database engine that knows how to connect to the URI above
@@ -295,6 +297,32 @@ def remove_artist():
                                request.form['delete_aid'])
     cursor.close()
     return redirect(url_for('index'))
+
+@app.route('/remove-playlist', methods=['POST'])
+def remove_playlist():
+    if 'uid' not in session:
+        print("reached /remove-playlist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = qry.remove_playlist(g.conn, session['uid'], request.form['remove_pid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+@app.route('/delete-playlist', methods=['POST'])
+def delete_playlist():
+    if 'uid' not in session:
+        print("reached /delete-playlist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = qry.delete_playlist(g.conn, request.form['delete_pid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
+
+@app.route('/songs', methods=['POST'])
+def songs():
+    if 'uid' not in session:
+        print("reached /songs with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    return redirect(url_for('songs'))
 
 
 #
