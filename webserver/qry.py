@@ -148,3 +148,10 @@ def unlike(conn, uid, sid):
           "WHERE uid = %s AND sid = %s;"
     args = uid, sid
     return conn.execute(qry, args)
+
+
+def like(conn, uid, sid):
+    qry = "INSERT INTO likes (uid, sid) " \
+          "VALUES (%s, %s);"
+    args = uid, sid
+    return conn.execute(qry, args)

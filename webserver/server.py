@@ -340,6 +340,17 @@ def unlike():
     return redirect(url_for('index'))
 
 
+@app.route('/like-or-unlike', methods=['POST'])
+def like_or_unlike():
+    if 'uid' not in session:
+        print("reached /unlike with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    if request.form['submit'] == '+':
+        cursor = qry.like(g.conn, session['uid'], request.form['sid'])
+        cursor.close()
+    return redirect(url_for('index'))
+
+
 if __name__ == "__main__":
     @click.command()
     @click.option('--debug', is_flag=True)

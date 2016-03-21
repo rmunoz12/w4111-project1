@@ -33,14 +33,14 @@
 
       <ul>
       {% for sid, d in songs.items() %}
-        <form action="/add_playlist" method="POST" class="add_playlist">
-        <li> <input type="submit" value="Add to playlist"></input> {{ d['sname']}} | {{d['aname']}} | {{d['albumname']}} <a href="/song?sid={{ d['sid'] }}"><img alt="i" src="/static/Sign-Info-icon.png" height="12"></a>
+        <form action="/like-or-unlike" method="POST" class="like-or-unlike">
+        <li> <input name="submit" type="submit" value="+"></input> {{ d['sname']}} | {{d['aname']}} | {{d['albumname']}} <a href="/song?sid={{ d['sid'] }}"><img alt="i" src="/static/Sign-Info-icon.png" height="12"></a>
           <br><audio controls>
             <source src="{{ d['link'] }}" type="audio/mpeg">
             <a href="{{ d['link'] }}">Listen</a>
           </audio>
 
-          <input type=hidden value="{{ d['s.sid'] }}" name="add_sid"></input>
+          <input type=hidden value="{{ d['sid'] }}" name="sid"></input>
 
           </form>
           </li>
