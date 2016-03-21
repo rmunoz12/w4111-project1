@@ -316,7 +316,18 @@ def artist():
         albums.append(d)
     cursor.close()
 
-    context = dict(aid=aid, aname=aname, albums=albums)
+    songs_by_album = {}
+    for d in albums:
+        for albumid, r in d.items():
+            cursor = qry.list_album_songs(g.conn, albumid)
+            songs = []
+            for row in cursor:
+                songs.append(row)
+            cursor.close()
+            songs_by_album[albumid] = songs
+
+    context = dict(aid=aid, aname=aname, albums=albums,
+                   songs_by_album=songs_by_album)
     return render_template('artist.html', **context)
 
 

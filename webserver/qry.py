@@ -79,3 +79,11 @@ def publish(conn, aid):
           "ORDER BY since DESC;"
     args = aid
     return conn.execute(qry, args)
+
+
+def list_album_songs(conn, albumid):
+    qry = "SELECT * " \
+          "FROM contain c, songs s " \
+          "WHERE c.albumid = %s AND c.sid = s.sid"
+    args = albumid
+    return conn.execute(qry, args)
