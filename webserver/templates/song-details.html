@@ -15,7 +15,10 @@
   </span>
 
   <h1>{{ song_details['sname'] }}</h1>
-
+  <audio controls>
+    <source src="{{ song_details['link'] }}" type="audio/mpeg">
+    <a href="{{ song_details['link'] }}">Listen</a>
+  </audio>
   <ul>
     <li>Length: {{ song_details['minutes'] }}:{% if song_details['seconds'] < 10 %}0{% endif %}{{ song_details['seconds'] }}</li>
     <li>Genre: {{ song_details['gname'] }}</li>
