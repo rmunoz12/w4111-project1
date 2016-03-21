@@ -12,7 +12,7 @@
 
   {% for d in albums %}
     {% for albumid, r in d.items() %}
-      <p><img src="{{ r['artlink'] }}">{{ r['albumname'] }}</p>
+      <p><img src="{{ r['artlink'] }}" style="width:128px;height:128px;">{{ r['albumname'] }} </p>
     {% endfor %}
   {% endfor %}
 
