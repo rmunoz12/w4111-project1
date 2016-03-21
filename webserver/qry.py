@@ -84,6 +84,14 @@ def publish(conn, aid):
 def list_album_songs(conn, albumid):
     qry = "SELECT * " \
           "FROM contain c, songs s " \
-          "WHERE c.albumid = %s AND c.sid = s.sid"
+          "WHERE c.albumid = %s AND c.sid = s.sid;"
     args = albumid
+    return conn.execute(qry, args)
+
+
+def song_details(conn, sid):
+    qry = "SELECT * " \
+          "FROM songs s, genres g " \
+          "WHERE s.gid = g.gid AND s.sid = %s;"
+    args = sid
     return conn.execute(qry, args)

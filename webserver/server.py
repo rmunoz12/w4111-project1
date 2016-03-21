@@ -334,6 +334,25 @@ def artist():
     return render_template('artist.html', **context)
 
 
+@app.route('/song')
+def song():
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+
+    if not request.args.get('sid'):
+        return "No sid passed"
+    sid = request.args['sid']
+    cursor = qry.song_details(g.conn, sid)
+    r = cursor.first()
+    if not r:
+        return "Unrecognized sid"
+    song_details = r
+    cursor.close()
+
+    context = dict(user=name, song_details=song_details)
+    return render_template('song.html', **context)
+
+
 #
 # This is an example of a different path.  You can see it at
 # 

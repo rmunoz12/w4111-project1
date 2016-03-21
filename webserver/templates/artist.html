@@ -22,7 +22,11 @@
       <span style="font-size: smaller; "><i>published: {{ r['since'] }}</i></span>
       <ul>
         {% for s in songs_by_album[albumid] %}
-          <li>{{ s['sname'] }}</li>
+          <li>{{ s['sname'] }}
+            <a href="/song?sid={{ s['sid'] }}">
+              <img alt="i" src="/static/Sign-Info-icon.png" height="12">
+            </a>
+          </li>
         {% endfor %}
       </ul>
     {% endfor %}
