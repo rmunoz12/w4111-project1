@@ -107,9 +107,33 @@ def search_songs(conn, song):
     args = song
     return conn.execute(qry, args)
 
+def playlist_songs(conn, pid):
+    qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
+          "FROM songs s, contain c, albums aa, added aaa, publish p, artists a, playlists pl " \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid AND aa.albumid = p.albumid AND p.aid = a.aid AND aaa.sid = s.sid AND aaa.pid = pl.pid AND pl.pid = %s"
+    args = pid
+    return conn.execute(qry, args)
+
+def playlist_name(conn, pid):
+    qry = "SELECT pname FROM playlists WHERE pid = %s;"
+    args = pid
+    return conn.execute(qry, args)
+
+def add_playlist(conn, uid, creater_uid, pid):
+    qry = "INSERT INTO subscribe (creater_uid, subscriber_uid, pid) VALUES (%s, %s, %s);"
+    args = int(creater_uid), int(uid), int(pid)
+    return conn.execute(qry, args)
 
 def playlist_subscribed(conn, uid):
     qry = "SELECT p.pname, p.pid FROM subscribe s, playlists p WHERE s.pid = p.pid AND s.subscriber_uid = %s;"
+    args = uid
+    return conn.execute(qry, args)
+
+def playlist_not_subscribed(conn, uid):
+    qry = "SELECT p.pname, p.pid, p.creater_uid FROM playlists p " \
+          "WHERE p.pid NOT IN " \
+          "(SELECT s.pid FROM subscribe s " \
+          "WHERE s.subscriber_uid = %s);"
     args = uid
     return conn.execute(qry, args)
 
