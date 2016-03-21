@@ -19,6 +19,7 @@
   <ul>
     <li>Length: {{ song_details['minutes'] }}:{% if song_details['seconds'] < 10 %}0{% endif %}{{ song_details['seconds'] }}</li>
     <li>Genre: {{ song_details['gname'] }}</li>
+    <li>Artist: <a href="/artist?aid={{ song_details['aid'] }}">{{ song_details['aname'] }}</a></li>
   </ul>
 
 

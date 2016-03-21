@@ -91,7 +91,10 @@ def list_album_songs(conn, albumid):
 
 def song_details(conn, sid):
     qry = "SELECT * " \
-          "FROM songs s, genres g " \
-          "WHERE s.gid = g.gid AND s.sid = %s;"
+          "FROM songs s, genres g, contain c, albums alb, publish p, " \
+          "     artists a " \
+          "WHERE s.gid = g.gid AND s.sid = c.sid AND c.albumid = alb.albumid " \
+          "      AND alb.albumid = p.albumid AND p.aid = a.aid " \
+          "      AND s.sid = %s;"
     args = sid
     return conn.execute(qry, args)
