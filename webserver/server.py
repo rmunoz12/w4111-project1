@@ -217,6 +217,7 @@ def remove_playlist():
     cursor.close()
     return redirect(url_for('index'))
 
+
 @app.route('/delete-playlist', methods=['POST'])
 def delete_playlist():
     if 'uid' not in session:
@@ -291,8 +292,14 @@ def artist():
             cursor.close()
             songs_by_album[albumid] = songs
 
+    cursor = qry.liked_songs(g.conn, uid)
+    likes = set()
+    for r in cursor:
+        likes.add(r['sid'])
+    cursor.close()
+
     context = dict(aid=aid, aname=aname, albums=albums,
-                   songs_by_album=songs_by_album, user=name)
+                   songs_by_album=songs_by_album, user=name, likes=likes)
     return render_template('artist.html', **context)
 
 

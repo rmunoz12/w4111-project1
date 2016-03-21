@@ -37,14 +37,22 @@
       <ul>
         {% for s in songs_by_album[albumid] %}
           <li>
+            <form action="/like-or-unlike" method="POST" class="like-or-unlike">
             <audio controls>
               <source src="{{ s['link'] }}" type="audio/mpeg">
               <a href="{{ s['link'] }}">Listen</a>
             </audio>
-            {{ s['sname'] }}
+
+              {% if s['sid'] not in likes %}
+                <input name="submit" type="submit" value="+" style="background-color: lightgreen"></input>
+              {% else %}
+                <input name="submit" type="submit" value="X"></input>
+              {% endif %}{{ s['sname'] }}
             <a href="/song?sid={{ s['sid'] }}">
               <img alt="i" src="/static/Sign-Info-icon.png" height="12">
             </a>
+            <input type=hidden value="{{ s['sid'] }}" name="sid"></input>
+            </form>
           </li>
         {% endfor %}
       </ul>
