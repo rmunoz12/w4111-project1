@@ -350,7 +350,7 @@ def song():
     cursor.close()
 
     context = dict(user=name, song_details=song_details)
-    return render_template('song.html', **context)
+    return render_template('song-details.html', **context)
 
 
 #
