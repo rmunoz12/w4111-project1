@@ -134,9 +134,17 @@ def user_dashboard():
         playlist_created[r['pid']] = r
     cursor.close()
 
+    cursor = qry.playlist_not_subscribed(g.conn, uid)
+    playlist_not_subscribed = {}
+    for r in cursor:
+        k = str(r['creater_uid']) + "|" + str(r['pid'])
+        playlist_not_subscribed[k] = r
+    cursor.close()
+
+
     context = dict(user=name, friends=friends, not_friends=not_friends,
                    artist_follows=artist_follows, not_followed=not_followed,
-                   playlist_subscribed=playlist_subscribed, playlist_created=playlist_created)
+                   playlist_subscribed=playlist_subscribed, playlist_created=playlist_created, playlist_not_subscribed=playlist_not_subscribed)
     return render_template('user-dashboard.html', **context)
 
 
@@ -207,6 +215,15 @@ def remove_artist():
     cursor.close()
     return redirect(url_for('index'))
 
+@app.route('/add-playlist', methods=['POST'])
+def add_playlist():
+    if 'uid' not in session:
+        print("reached /add-playlist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    t, r = request.form['pid'].split("|")
+    cursor = qry.add_playlist(g.conn, session['uid'], t, r)
+    cursor.close()
+    return redirect(url_for('index'))
 
 @app.route('/remove-playlist', methods=['POST'])
 def remove_playlist():
@@ -256,6 +273,23 @@ def songs():
     context = dict(user=name, songs=songs)
     return render_template("songs.html", **context)
 
+
+@app.route('/playlist')
+def playlist():
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+    if not request.args.get('pid'):
+        return "No pid passed"
+    pid = request.args['pid']
+    cursor = qry.playlist_songs(g.conn, pid)
+    songs1 = {}
+    for r in cursor:
+        songs1[r['sid']] = r
+    cursor.close()
+    plname=qry.playlist_name(g.conn, pid).first()['pname']
+    
+    context = dict(user=name, songs1=songs1, pname = plname)
+    return render_template('playlist.html', **context)
 
 @app.route('/artist')
 def artist():

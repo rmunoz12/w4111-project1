@@ -83,7 +83,7 @@
     <ul>
       {% for pname, d in playlist_subscribed.items() %}
         <form action="/remove-playlist" method="POST" class="remove-playlist">
-        <li> <input type="submit" value="X"></input> {{ d['pname']}}
+        <li> <input type="submit" value="Unsubscribe"></input> <a href="/playlist?pid={{d['pid']}}"> {{ d['pname']}}</a>
 
           <input type=hidden value="{{ d['pid'] }}" name="remove_pid"></input>
 
@@ -93,13 +93,23 @@
       </ul>
   </p>
 
+  <p>Subscribe another playlist:
+    <form action="/add-playlist" method="POST">
+      <select name="pid" id="user">
+        {% for pid, d in playlist_not_subscribed.items() %}
+            <div> <option value="{{ pid }}"> {{ d['pname'] }} </option> </div>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Subscribe">
+    </form>
+  </p>
   
   <p>
     Playlists you created:
     <ul>
       {% for pname, d in playlist_created.items() %}
         <form action="/delete-playlist" method="POST" class="delete-playlist">
-        <li> <input type="submit" value="X"></input> {{ d['pname']}}
+        <li> <input type="submit" value="Delete"></input> <a href="/playlist?pid={{d['pid']}}"> {{ d['pname']}} </a>
 
           <input type=hidden value="{{ d['pid'] }}" name="delete_pid"></input>
 
