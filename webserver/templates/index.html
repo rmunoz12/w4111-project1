@@ -24,7 +24,9 @@
     <p>Or create a new user: <input type="text" name="uname">
       <input type="submit" value="Create">
       {% if bad_uname %}
-        Invalid user name, try again.
+        <span style="color: #FF0000; font-size: small">
+          Invalid user name, try again.
+        </span>
       {% endif %}
     </p>
   </form>
