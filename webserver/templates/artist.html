@@ -13,6 +13,7 @@
   {% for d in albums %}
     {% for albumid, r in d.items() %}
       <h4><img src="{{ r['artlink'] }}" style="width:128px;height:128px;">{{ r['albumname'] }} </h4>
+      <span style="font-size: smaller; "><i>published: {{ r['since'] }}</i></span>
       <ul>
         {% for s in songs_by_album[albumid] %}
           <li>{{ s['sname'] }}</li>
