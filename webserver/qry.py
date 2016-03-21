@@ -77,7 +77,7 @@ def playlist_subscribed(conn, uid):
     args = uid
     return conn.execute(qry, args)
 
-def remove_playlist(con, uid, pid):
+def remove_playlist(conn, uid, pid):
     qry = "DELETE FROM subscribe WHERE subscriber_uid = %s AND pid = %s;"
     args = uid, pid
     return conn.execute(qry,args)
@@ -88,8 +88,8 @@ def playlist_created(conn, uid):
     return conn.execute(qry, args)
 
 def delete_playlist(conn, pid):
-    qry = "DELETE FROM playlists WHERE pid = %s;"
-    args = pid
+    qry = "DELETE FROM subscribe WHERE pid = %s; DELETE FROM added WHERE pid = %s; DELETE FROM Playlists WHERE pid = %s;"
+    args = pid, pid, pid
     return conn.execute(qry, args)
     
 
