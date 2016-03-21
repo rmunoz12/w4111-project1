@@ -17,6 +17,7 @@ Read about it online.
 """
 
 import json
+from math import floor
 import os
 import traceback
 
@@ -346,8 +347,13 @@ def song():
     r = cursor.first()
     if not r:
         return "Unrecognized sid"
-    song_details = r
+    song_details = dict(r)
     cursor.close()
+
+    song_details['minutes'] = int(floor(song_details['length'] / 1000 / 60))
+    song_details['seconds'] = (song_details['length'] -
+                               song_details['minutes'] * 1000 * 60) / 1000
+    song_details['seconds'] = int(round(song_details['seconds']))
 
     context = dict(user=name, song_details=song_details)
     return render_template('song-details.html', **context)
