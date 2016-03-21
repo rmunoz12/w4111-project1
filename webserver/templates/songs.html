@@ -36,7 +36,9 @@
         <form action="/like-or-unlike" method="POST" class="like-or-unlike">
         <li>
           {% if not d['liked'] %}
-            <input name="submit" type="submit" value="+"></input>
+            <input name="submit" type="submit" value="+" style="background-color: lightgreen"></input>
+          {% else %}
+            <input name="submit" type="submit" value="X"></input>
           {% endif %}
           {{ d['sname']}} | {{d['aname']}} | {{d['albumname']}} <a href="/song?sid={{ d['sid'] }}"><img alt="i" src="/static/Sign-Info-icon.png" height="12"></a>
           <br><audio controls>

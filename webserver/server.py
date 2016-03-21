@@ -359,6 +359,9 @@ def like_or_unlike():
     if request.form['submit'] == '+':
         cursor = qry.like(g.conn, session['uid'], request.form['sid'])
         cursor.close()
+    else:
+        cursor = qry.unlike(g.conn, session['uid'], request.form['sid'])
+        cursor.close()
     return redirect(url_for('index'))
 
 
