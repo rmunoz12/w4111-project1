@@ -299,6 +299,9 @@ def remove_artist():
 
 @app.route('/artist')
 def artist():
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+
     if not request.args.get('aid'):
         return "No aid passed"
     aid = request.args['aid']
@@ -327,7 +330,7 @@ def artist():
             songs_by_album[albumid] = songs
 
     context = dict(aid=aid, aname=aname, albums=albums,
-                   songs_by_album=songs_by_album)
+                   songs_by_album=songs_by_album, user=name)
     return render_template('artist.html', **context)
 
 
