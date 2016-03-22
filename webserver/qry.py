@@ -160,15 +160,14 @@ def playlist_created(conn, uid):
     return conn.execute(qry, args)
 
 
-# TODO add creater_uid to added
 def delete_playlist(conn, pid, cid):
     qry = "DELETE FROM subscribe " \
           "WHERE pid = %s AND creater_uid = %s; " \
           "DELETE FROM added " \
-          "WHERE pid = %s; " \
+          "WHERE pid = %s AND uid = %s; " \
           "DELETE FROM Playlists " \
           "WHERE pid = %s AND creater_uid = %s;"
-    args = pid, cid, pid, pid, cid
+    args = pid, cid, pid, cid, pid, cid
     return conn.execute(qry, args)
     
 
