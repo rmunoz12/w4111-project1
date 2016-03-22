@@ -426,6 +426,8 @@ def like_or_unlike():
     else:
         cursor = qry.unlike(g.conn, session['uid'], request.form['sid'])
         cursor.close()
+    if not request.form.get('redirect'):
+        return redirect(url_for('index'))
     if request.form['redirect'] == 'artist':
         return redirect(url_for('artist', aid=request.form['aid']))
     if request.form['redirect'] == 'song':
