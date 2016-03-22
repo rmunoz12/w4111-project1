@@ -25,6 +25,12 @@
 
 
 <body>
+
+  <span style="font-size: small; ">
+  Signed in as: {{ user }} <br>
+  <a href="/"> Return to Dashboard</a>
+  </span>
+
   <h1>Playlist: {{pname}}</h1>
 
       <ul>
@@ -60,12 +66,9 @@
         </li>
         </form>
       {% endfor %}
+
+        <li><a href="/add-song-to-playlist?pid={{ pid }}&cid={{ cid }}">Add song</a></li>
       </ul>
-
-
-  <p><a href="/">Go back to dashbord</a></p>
-
-  <p><a href="/logout">Select another user.</a></p>
 
 </body>
 </html>
