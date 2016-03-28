@@ -313,6 +313,16 @@ def new_user():
     return redirect(url_for('login'))
 
 
+@app.route('/delete-user')
+def delete_user():
+    if 'uid' not in session:
+        print("reached /delete-user with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = qry.delete_user(g.conn, session['uid'])
+    cursor.close()
+    return redirect(url_for('logout'))
+
+
 #
 # This is an example of a different path.  You can see it at
 # 

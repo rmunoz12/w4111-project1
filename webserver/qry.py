@@ -79,3 +79,15 @@ def new_user(conn, uname):
           "VALUES (%s, %s);"
     args = uid, uname
     return conn.execute(qry, args), uid
+
+
+def delete_user(conn, uid):
+    qry = "DELETE FROM friends WHERE friend_uid = %s OR friends.origin_uid = %s; " \
+          "DELETE FROM follow WHERE uid = %s; " \
+          "DELETE FROM likes WHERE uid = %s; " \
+          "DELETE FROM subscribe WHERE subscriber_uid = %s; " \
+          "DELETE FROM added WHERE uid = %s; " \
+          "DELETE FROM subscribe WHERE creater_uid = %s; " \
+          "DELETE FROM users WHERE uid = %s;"
+    args = uid, uid, uid, uid, uid, uid, uid, uid
+    return conn.execute(qry, args)
