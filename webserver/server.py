@@ -391,7 +391,7 @@ def playlist():
     cursor.close()
 
     context = dict(user=name, songs1=songs1, pname=plname, likes=likes, pid=pid,
-                   cid=cid)
+                   cid=cid, uid=uid)
     return render_template('playlist.html', **context)
 
 @app.route('/add_song_to_playlist')

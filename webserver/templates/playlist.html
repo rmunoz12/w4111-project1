@@ -35,13 +35,15 @@
 
       <ul>
       {% for sid, d in songs1.items() %}
-        <form action="/remove-playlist-song" method="POST" class="remove-song"
-              style="float: left;">
-          <input name="submit" type="submit" value="Remove"></input>
-          <input type=hidden value="{{ d['sid'] }}" name="sid"></input>
-          <input type=hidden value="{{ pid }}" name="pid"></input>
-          <input type=hidden value="{{ cid }}" name="cid"></input>
-        </form>
+        {% if uid == cid %}
+          <form action="/remove-playlist-song" method="POST" class="remove-song"
+                style="float: left;">
+            <input name="submit" type="submit" value="Remove"></input>
+            <input type=hidden value="{{ d['sid'] }}" name="sid"></input>
+            <input type=hidden value="{{ pid }}" name="pid"></input>
+            <input type=hidden value="{{ cid }}" name="cid"></input>
+          </form>
+        {%  endif %}
         <form action="/like-or-unlike" method="POST" class="like-or-unlike"
               style="display: inline;">
         <li>
@@ -67,8 +69,9 @@
         </form>
       {% endfor %}
 
-
+      {% if uid == cid %}
         <li><a href="/add_song_to_playlist?pid={{ pid }}">Add song</a></li>
+      {% endif %}
       </ul>
 
 </body>
