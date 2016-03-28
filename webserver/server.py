@@ -338,7 +338,12 @@ def createplaylist():
         return redirect(url_for('index'))
     uid = session['uid']
     name = qry.uname(g.conn, uid).first()['uname']
-    context = dict(user=name)
+    if session.get('bad_pname'):
+        bad_pname = session['bad_pname']
+    else:
+        bad_pname = False
+    session['bad_pname'] = False
+    context = dict(user=name, bad_pname=bad_pname)
     return render_template("createplaylist.html", **context)
 
 @app.route('/createpl', methods=['POST'])
@@ -346,6 +351,10 @@ def createpl():
     if 'uid' not in session:
         print("reached /createpl with no session['uid']; return to index")
         return redirect(url_for('index'))
+    pattern = '^[a-zA-Z]([a-zA-Z0-9() ]*[a-zA-Z0-9()]|[a-zA-Z0-9()])*$'
+    if not re.match(pattern, request.form['playlist']):
+        session['bad_pname'] = True
+        return redirect(url_for('createplaylist'))
     uid = session['uid']
     name = qry.uname(g.conn, uid).first()['uname']
     cursor = qry.createpl(g.conn, uid, request.form['playlist'])

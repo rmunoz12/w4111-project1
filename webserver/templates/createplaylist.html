@@ -22,6 +22,11 @@
       <input type="text" name="playlist" value="">
         
       <input type="submit" value="Create">
+      {% if bad_pname %}
+        <span style="color: #FF0000; font-size: small">
+          Invalid playlist name, try again.
+        </span>
+      {% endif %}
     </form>
 
 </body>
