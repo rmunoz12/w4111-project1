@@ -160,9 +160,13 @@ def playlist_created(conn, uid):
     return conn.execute(qry, args)
 
 def createpl(conn, uid, plname):
-    qry = "INSERT INTO playlists(pid, creater_uid, pname) VALUES ((SELECT max(pid)+1 FROM playlists), %s, %s)"
+    qry = "INSERT INTO playlists(pid, creater_uid, pname) VALUES ((SELECT max(pid)+1 FROM playlists), %s, %s);"
     args = uid, plname
     return conn.execute(qry, args)
+
+def pidpl(conn):
+    qry = "SELECT * FROM playlists WHERE pid = (SELECT max(pid) FROM playlists);"
+    return conn.execute(qry)
 
 def delete_playlist(conn, pid, cid):
     qry = "DELETE FROM subscribe " \

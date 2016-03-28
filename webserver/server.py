@@ -323,8 +323,9 @@ def createpl():
         return redirect(url_for('index'))
     uid = session['uid']
     name = qry.uname(g.conn, uid).first()['uname']
-    pid = qry.createpl(g.conn, uid, request.form['playlist'])
-    
+    cursor = qry.createpl(g.conn, uid, request.form['playlist'])
+    cursor.close()
+    pid = qry.pidpl(g.conn).first()['pid']
     
     songs1 = {}
     #plname = qry.playlist_name(g.conn, pid, uid).first()['pname']
