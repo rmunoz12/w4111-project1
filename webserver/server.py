@@ -303,6 +303,62 @@ def songs():
     context = dict(user=name, songs=songs)
     return render_template("songs.html", **context)
 
+@app.route('/songspl', methods=['POST'])
+def songspl():
+    if 'uid' not in session:
+        print("reached /songspl with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+    cursor = qry.songsinpl(g.conn, request.form['pid'])
+    songsinpl = set()
+    for r in cursor:
+        songsinpl.add(r['sid'])
+    cursor.close()
+
+    cursor = qry.search_songs(g.conn, request.form['song'])
+    songs = {}
+    for r in cursor:
+        d = dict(r)
+        if d['sid'] in songsinpl:
+            d['liked'] = True
+        else:
+            d['liked'] = False
+        songs[d['sid']] = d
+    cursor.close()
+
+    context = dict(user=name, songs=songs, pid=request.form['pid'])
+    return render_template("songspl.html", **context)
+
+
+@app.route('/createplaylist')
+def createplaylist():
+    if 'uid' not in session:
+        print("reached /createplaylist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+    context = dict(user=name)
+    return render_template("createplaylist.html", **context)
+
+@app.route('/createpl', methods=['POST'])
+def createpl():
+    if 'uid' not in session:
+        print("reached /createpl with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+    cursor = qry.createpl(g.conn, uid, request.form['playlist'])
+    cursor.close()
+    pid = qry.pidpl(g.conn).first()['pid']
+    
+    songs1 = {}
+    #plname = qry.playlist_name(g.conn, pid, uid).first()['pname']
+    likes = set()
+    context = dict(user=name, songs1=songs1, pname=request.form['playlist'], likes=likes, pid=pid,
+                   cid=uid)
+    return render_template("playlist.html", **context)
+
 
 @app.route('/playlist')
 def playlist():
@@ -328,6 +384,49 @@ def playlist():
     context = dict(user=name, songs1=songs1, pname=plname, likes=likes, pid=pid,
                    cid=cid)
     return render_template('playlist.html', **context)
+
+@app.route('/add_song_to_playlist')
+def add_song_to_playlist():
+    if 'uid' not in session:
+        print("reached /add_song_to_playlist with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+    pid = request.args['pid']
+
+    cursor = qry.songsinpl(g.conn, pid)
+    songsinpl = set()
+    for r in cursor:
+        songsinpl.add(r['sid'])
+    cursor.close()
+
+    cursor = qry.liked_songs(g.conn, uid)
+    likes = {}
+
+    for r in cursor:
+        d = dict(r)
+        if d['sid'] in songsinpl:
+            d['liked'] = True
+        else:
+            d['liked'] = False
+        likes[d['sid']] = d
+    cursor.close()
+
+    context = dict(user=name, likes=likes, pid=pid)
+    return render_template('addsongs.html', **context)
+
+@app.route('/addtopl', methods=['POST'])
+def addtopl():
+    if 'uid' not in session:
+        print("reached /addtopl with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    uid = session['uid']
+    name = qry.uname(g.conn, uid).first()['uname']
+
+    cursor = qry.addtopl(g.conn, request.form['add_sid'], request.form['pid'])
+    cursor.close()
+    return redirect(url_for('index'))
+
 
 @app.route('/artist')
 def artist():

@@ -1,0 +1,28 @@
+<html>
+  <style>
+    body{
+      font-size: 15pt;
+      font-family: arial;
+    }
+    ul {
+    list-style-type: none;
+    }
+  </style>
+
+<body>
+
+  <span style="font-size: small; ">
+    Signed in as: {{ user }} <br>
+    <a href="/"> Return to Dashboard</a>
+  </span>
+
+  <h1>Create a playlist</h1>
+
+    <form action="/createpl" method="POST">
+      <input type="text" name="playlist" value="">
+        
+      <input type="submit" value="Create">
+    </form>
+
+</body>
+</html>
