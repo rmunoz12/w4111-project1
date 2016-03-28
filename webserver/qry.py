@@ -109,6 +109,38 @@ def search_songs(conn, song):
     args = "%" + song + "%"
     return conn.execute(qry, args)
 
+
+def search_songs_by_album(conn, song):
+    qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
+          "FROM songs s, contain c, albums aa, publish p, artists a " \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid " \
+          "      AND aa.albumid = p.albumid AND p.aid = a.aid " \
+          "      AND aa.albumname ILIKE %s"
+    args = "%" + song + "%"
+    return conn.execute(qry, args)
+
+
+def search_songs_by_artist(conn, song):
+    qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
+          "FROM songs s, contain c, albums aa, publish p, artists a " \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid " \
+          "      AND aa.albumid = p.albumid AND p.aid = a.aid " \
+          "      AND a.aname ILIKE %s"
+    args = "%" + song + "%"
+    return conn.execute(qry, args)
+
+
+def search_songs_by_genre(conn, song):
+    qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
+          "FROM songs s, contain c, albums aa, publish p, artists a, genres g " \
+          "WHERE s.sid = c.sid AND c.albumid = aa.albumid " \
+          "      AND aa.albumid = p.albumid AND p.aid = a.aid " \
+          "      AND g.gid = s.gid " \
+          "      AND g.gname ILIKE %s"
+    args = "%" + song + "%"
+    return conn.execute(qry, args)
+
+
 def playlist_songs(conn, pid, cid):
     qry = "SELECT s.sid, s.sname, s.link, aa.albumname, a.aname " \
           "FROM songs s, contain c, albums aa, added aaa, publish p, artists a, " \
