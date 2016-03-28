@@ -59,6 +59,12 @@
    <form action="/songspl" method="POST">
       <input type="text" name="song" value="">
       <input type=hidden value="{{pid}}" name="pid"></input>
+     <select name="field" id="field">
+        <div> <option value="sname"> song name </option> </div>
+        <div> <option value="albumname"> album name </option> </div>
+        <div> <option value="aname"> artist name </option> </div>
+        <div> <option value="gname"> genre name </option> </div>
+      </select>
       <input type="submit" value="Search">
     </form>
 

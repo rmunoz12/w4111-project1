@@ -299,7 +299,7 @@ def songs():
     elif fname == 'gname':
         cursor = qry.search_songs_by_genre(g.conn, request.form['song'])
     else:
-        raise
+        return redirect(url_for('index'))
     songs = {}
     for r in cursor:
         d = dict(r)
@@ -326,7 +326,18 @@ def songspl():
         songsinpl.add(r['sid'])
     cursor.close()
 
-    cursor = qry.search_songs(g.conn, request.form['song'])
+    fname = request.form['field']
+    if fname == 'sname':
+        cursor = qry.search_songs(g.conn, request.form['song'])
+    elif fname == 'albumname':
+        cursor = qry.search_songs_by_album(g.conn, request.form['song'])
+    elif fname == 'aname':
+        cursor = qry.search_songs_by_artist(g.conn, request.form['song'])
+    elif fname == 'gname':
+        cursor = qry.search_songs_by_genre(g.conn, request.form['song'])
+    else:
+        return redirect(url_for('index'))
+
     songs = {}
     for r in cursor:
         d = dict(r)
