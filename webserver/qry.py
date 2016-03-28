@@ -159,6 +159,10 @@ def playlist_created(conn, uid):
     args = uid
     return conn.execute(qry, args)
 
+def createpl(conn, uid, plname):
+    qry = "INSERT INTO playlists(pid, creater_uid, pname) VALUES ((SELECT max(pid)+1 FROM playlists), %s, %s)"
+    args = uid, plname
+    return conn.execute(qry, args)
 
 def delete_playlist(conn, pid, cid):
     qry = "DELETE FROM subscribe " \
@@ -169,7 +173,16 @@ def delete_playlist(conn, pid, cid):
           "WHERE pid = %s AND creater_uid = %s;"
     args = pid, cid, pid, cid, pid, cid
     return conn.execute(qry, args)
+
+def songsinpl(conn, pid):
+    qry = "SELECT * FROM added WHERE pid = %s;"
+    args = pid
+    return conn.execute(qry, args)
     
+def addtopl(conn, sid, pid):
+  qry = "INSERT INTO added(pid, uid, sid) VALUES (%s, (SELECT creater_uid FROM playlists WHERE pid = %s), %s);"
+  args = pid, pid, sid
+  return conn.execute(qry, args)
 
 def liked_songs(conn, uid):
     qry = "SELECT * " \
