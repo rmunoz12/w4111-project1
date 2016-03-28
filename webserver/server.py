@@ -19,6 +19,7 @@ import click
 import json
 from math import floor
 import os
+import re
 import traceback
 
 from sqlalchemy import *
@@ -160,13 +161,15 @@ def index():
         users[result['uid']] = result['uname']
     cursor.close()
 
-    context = dict(data=users)
+    context = dict(data=users, bad_uname=session.get('bad_uname'))
+    session['bad_uname'] = False
     return render_template("index.html", **context)
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    session['uid'] = request.form['uid']
+    if request.method == 'POST':
+        session['uid'] = request.form['uid']
     return redirect(url_for('index'))
 
 
@@ -237,6 +240,28 @@ def remove_playlist():
                                  request.form['remove_cid'])
     cursor.close()
     return redirect(url_for('index'))
+
+@app.route('/new-user', methods=['POST'])
+def new_user():
+    uname = request.form['uname']
+    pattern = '^[a-z A-Z][a-zA-Z0-9]*$'
+    if re.match(pattern, uname):
+        cursor, uid = qry.new_user(g.conn, request.form['uname'])
+        cursor.close()
+        session['uid'] = uid
+    else:
+        session['bad_uname'] = True
+    return redirect(url_for('login'))
+
+
+@app.route('/delete-user')
+def delete_user():
+    if 'uid' not in session:
+        print("reached /delete-user with no session['uid']; return to index")
+        return redirect(url_for('index'))
+    cursor = qry.delete_user(g.conn, session['uid'])
+    cursor.close()
+    return redirect(url_for('logout'))
 
 
 @app.route('/delete-playlist', methods=['POST'])
